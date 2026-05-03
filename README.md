@@ -68,11 +68,19 @@ See `uv run ebless <command> --help` for the full list of options on each comman
 
 ## Development
 
-Run the test suite with:
+Common development tasks are exposed as [`just`](https://github.com/casey/just) recipes. Run `just` (no args) to list them:
 
 ```sh
-uv run pytest
+just            # list available recipes
+just sync       # install/refresh dependencies (alias: just install)
+just test       # run the test suite
+just lint       # ruff check
+just format     # ruff format
+just run …      # invoke ebless with arbitrary args
+just clean      # remove .venv and build artifacts
 ```
+
+The recipes are thin wrappers — equivalents like `uv run pytest` work too.
 
 ## How it works
 
