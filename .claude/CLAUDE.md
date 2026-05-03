@@ -53,3 +53,5 @@ Each commit:
 - Do not invent unknown APIs, look up or ask if you are unsure
 
 ## Project-Specific Instructions
+
+- Follow PEP8 guidelines
