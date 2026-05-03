@@ -33,7 +33,7 @@ def load(library_root: Path, path: Path = INVENTORY_PATH) -> dict[str, FileFinge
     return result
 
 
-def classify(
+def detect_changes(
     library_root: Path,
     found: list[Path],
     previous: dict[str, FileFingerprint],

@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from ebless.inventory import FileFingerprint, classify, load, save
+from ebless.inventory import FileFingerprint, detect_changes, load, save
 
 
 def _write_pdf(path, content=b"hello"):
@@ -68,19 +68,19 @@ def test_load_ignores_unknown_fields_per_file(tmp_path):
     assert result == {"a.pdf": {"mtime": 1.0, "size": 5}}
 
 
-def test_classify_marks_new_files_as_added(tmp_path):
+def test_detect_changes_marks_new_files_as_added(tmp_path):
     library = tmp_path / "library"
     library.mkdir()
     fresh = _write_pdf(library / "fresh.pdf")
 
-    change = classify(library, [fresh], previous={})
+    change = detect_changes(library, [fresh], previous={})
     assert change.added == ["fresh.pdf"]
     assert change.modified == []
     assert change.unchanged == []
     assert change.removed == []
 
 
-def test_classify_marks_unchanged_files_as_unchanged(tmp_path):
+def test_detect_changes_marks_unchanged_files_as_unchanged(tmp_path):
     library = tmp_path / "library"
     library.mkdir()
     file = _write_pdf(library / "book.pdf", b"data")
@@ -89,14 +89,14 @@ def test_classify_marks_unchanged_files_as_unchanged(tmp_path):
         "book.pdf": {"mtime": info.st_mtime, "size": info.st_size}
     }
 
-    change = classify(library, [file], previous=previous)
+    change = detect_changes(library, [file], previous=previous)
     assert change.unchanged == ["book.pdf"]
     assert change.added == []
     assert change.modified == []
     assert change.removed == []
 
 
-def test_classify_marks_mtime_change_as_modified(tmp_path):
+def test_detect_changes_marks_mtime_change_as_modified(tmp_path):
     library = tmp_path / "library"
     library.mkdir()
     file = _write_pdf(library / "book.pdf", b"data")
@@ -105,11 +105,11 @@ def test_classify_marks_mtime_change_as_modified(tmp_path):
         "book.pdf": {"mtime": info.st_mtime - 100.0, "size": info.st_size}
     }
 
-    change = classify(library, [file], previous=previous)
+    change = detect_changes(library, [file], previous=previous)
     assert change.modified == ["book.pdf"]
 
 
-def test_classify_marks_size_change_as_modified(tmp_path):
+def test_detect_changes_marks_size_change_as_modified(tmp_path):
     library = tmp_path / "library"
     library.mkdir()
     file = _write_pdf(library / "book.pdf", b"data")
@@ -118,26 +118,26 @@ def test_classify_marks_size_change_as_modified(tmp_path):
         "book.pdf": {"mtime": info.st_mtime, "size": info.st_size + 1}
     }
 
-    change = classify(library, [file], previous=previous)
+    change = detect_changes(library, [file], previous=previous)
     assert change.modified == ["book.pdf"]
 
 
-def test_classify_marks_missing_files_as_removed(tmp_path):
+def test_detect_changes_marks_missing_files_as_removed(tmp_path):
     library = tmp_path / "library"
     library.mkdir()
     previous: dict[str, FileFingerprint] = {"gone.pdf": {"mtime": 1.0, "size": 10}}
 
-    change = classify(library, [], previous=previous)
+    change = detect_changes(library, [], previous=previous)
     assert change.removed == ["gone.pdf"]
 
 
-def test_classify_relative_paths_are_posix_form(tmp_path):
+def test_detect_changes_relative_paths_are_posix_form(tmp_path):
     library = tmp_path / "library"
     nested = library / "sub" / "deep"
     nested.mkdir(parents=True)
     file = _write_pdf(nested / "deep.pdf")
 
-    change = classify(library, [file], previous={})
+    change = detect_changes(library, [file], previous={})
     assert change.added == ["sub/deep/deep.pdf"]
 
 
