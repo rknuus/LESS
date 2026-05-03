@@ -19,15 +19,4 @@ def index_books(path: Path) -> None:
     for relative in change_set.removed:
         logger.debug("file removed from library", extra={"path": relative})
 
-    logger.info(
-        "indexed library",
-        extra={
-            "library": str(library_root),
-            "added": len(change_set.added),
-            "modified": len(change_set.modified),
-            "removed": len(change_set.removed),
-            "unchanged": len(change_set.unchanged),
-        },
-    )
-
     inventory.save(library_root, found, path=inventory.INVENTORY_PATH)

@@ -85,32 +85,3 @@ def test_removed_file_is_logged_at_debug_and_pruned(tmp_path, capsys, caplog):
     assert "gone.pdf" not in saved
     assert "keeper.pdf" in saved
     assert keeper.exists()
-
-
-def test_summary_info_record_carries_counts(tmp_path, capsys, caplog):
-    library = tmp_path / "library"
-    library.mkdir()
-    stable = _write_pdf(library / "stable.pdf", b"stable")
-    bumped = _write_pdf(library / "bumped.pdf", b"bumped")
-    gone = _write_pdf(library / "gone.pdf", b"gone")
-
-    index_books(library)
-    capsys.readouterr()
-
-    future = bumped.stat().st_mtime + 5
-    os.utime(bumped, (future, future))
-    gone.unlink()
-    _write_pdf(library / "fresh.pdf", b"fresh")
-
-    caplog.set_level(logging.DEBUG, logger="ebless.indexer")
-    index_books(library)
-
-    summaries = [r for r in caplog.records if r.levelname == "INFO" and r.msg == "indexed library"]
-    assert len(summaries) == 1
-    summary = summaries[0]
-    assert summary.added == 1
-    assert summary.modified == 1
-    assert summary.removed == 1
-    assert summary.unchanged == 1
-    assert summary.library == str(library.resolve())
-    assert stable.exists()
