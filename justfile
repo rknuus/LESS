@@ -12,6 +12,9 @@ test:
 lint:
     uv run ruff check
 
+typecheck:
+    ty check ebless tests --error-on-warning
+
 format:
     uv run ruff format
 

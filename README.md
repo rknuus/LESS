@@ -75,6 +75,7 @@ just            # list available recipes
 just sync       # install/refresh dependencies (alias: just install)
 just test       # run the test suite
 just lint       # ruff check
+just typecheck  # ty check (strict)
 just format     # ruff format
 just run …      # invoke ebless with arbitrary args
 just clean      # remove .venv and build artifacts
