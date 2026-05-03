@@ -3,11 +3,26 @@ import pathlib
 import click
 
 from ebless.indexer import index_books
+from ebless.logconfig import configure
 
 
 @click.group()
-def cli() -> None:
+@click.option(
+    "--log-level",
+    type=click.Choice(
+        ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"], case_sensitive=False
+    ),
+    default="INFO",
+    show_default=True,
+)
+@click.option(
+    "--log-file",
+    type=click.Path(dir_okay=False, writable=True, path_type=pathlib.Path),
+    default=None,
+)
+def cli(log_level: str, log_file: pathlib.Path | None) -> None:
     """ebless — eBook LLM Empowered Semantic Search."""
+    configure(level=log_level, log_file=log_file)
 
 
 @cli.command("index")
