@@ -35,13 +35,13 @@ This creates a managed virtual environment, installs ebless in editable mode, an
 
 ### Index a directory of books
 
-Point ebless at a directory and have it index every supported eBook it finds:
+Point ebless at a directory and have it list every supported eBook it finds:
 
 ```sh
 uv run ebless index <path/to/books>
 ```
 
-ebless walks the directory, extracts paragraphs from each supported file, computes embeddings, and stores them. Re-running `index` on the same directory only processes files that have changed since the last run.
+ebless walks the directory recursively and prints the absolute path of every supported file it discovers, one per line, in sorted order. See [Current limitations](#current-limitations) for what `index` does not yet do.
 
 ### Search the index
 
@@ -81,6 +81,17 @@ just clean      # remove .venv and build artifacts
 ```
 
 The recipes are thin wrappers — equivalents like `uv run pytest` work too.
+
+## Current limitations
+
+ebless is in early development. The current build ships only the discovery walk used by `index`; everything else described above is the intended product, not the shipped one. In particular:
+
+- **PDF only.** EPUB and other formats are not yet supported.
+- **`index` only lists discovered files.** It does not yet extract text, compute embeddings, or persist anything to a vector store.
+- **`search` is not yet implemented.** The command surface described above is aspirational.
+- **Symlinks are skipped.** Symlinked directories are not descended into and symlinked files are not included in results.
+- **Permission errors are warned-and-skipped.** When a directory cannot be read, ebless writes a warning to stderr and continues the walk; it does not abort.
+- **macOS / Linux only at this time.**
 
 ## How it works
 
