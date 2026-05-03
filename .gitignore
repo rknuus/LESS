@@ -1,0 +1,8 @@
+# TheAgent -- generated plugin & transient history
+.theagent/
+
+# CCPM metadata is local-only; not synced via git
+.ccpm/
+
+# Python bytecode caches (anywhere in the tree)
+__pycache__/
