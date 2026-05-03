@@ -18,11 +18,18 @@ ebless aims to support the most common eBook formats:
 
 ### Prerequisites
 
-- A recent runtime to execute the ebless CLI (see your platform's installation instructions).
+- Python 3.11 or newer.
+- [`uv`](https://docs.astral.sh/uv/) for dependency management.
 
 ### Install
 
-Follow the installation instructions for your platform.
+Clone the repository and synchronise the environment:
+
+```sh
+uv sync
+```
+
+This creates a managed virtual environment, installs ebless in editable mode, and exposes the `ebless` command via `uv run`.
 
 ## Usage
 
@@ -31,7 +38,7 @@ Follow the installation instructions for your platform.
 Point ebless at a directory and have it index every supported eBook it finds:
 
 ```sh
-ebless index <path/to/books>
+uv run ebless index <path/to/books>
 ```
 
 ebless walks the directory, extracts paragraphs from each supported file, computes embeddings, and stores them. Re-running `index` on the same directory only processes files that have changed since the last run.
@@ -41,13 +48,13 @@ ebless walks the directory, extracts paragraphs from each supported file, comput
 Run a natural-language query against your indexed library:
 
 ```sh
-ebless search "<query>"
+uv run ebless search "<query>"
 ```
 
 Example:
 
 ```sh
-ebless search "passages about the value of slow, deliberate thinking"
+uv run ebless search "passages about the value of slow, deliberate thinking"
 ```
 
 ebless returns the top matching paragraphs, each annotated with the source book and a similarity score, so you can quickly jump to the relevant passage.
@@ -57,7 +64,15 @@ ebless returns the top matching paragraphs, each annotated with the source book 
 - `--limit <N>` — return at most N results (default: a small handful).
 - `--book <name>` — restrict the search to a single indexed book.
 
-See `ebless <command> --help` for the full list of options on each command.
+See `uv run ebless <command> --help` for the full list of options on each command.
+
+## Development
+
+Run the test suite with:
+
+```sh
+uv run pytest
+```
 
 ## How it works
 
