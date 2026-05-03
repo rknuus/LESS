@@ -106,6 +106,9 @@ def _coerce_fingerprint(entry: object) -> FileFingerprint | None:
     fields = _as_str_object_dict(entry)
     mtime = fields.get("mtime")
     size = fields.get("size")
+    # Drop entries with wrong-typed fields (hand-edited or older inventory
+    # versions) by returning None; load() then omits them, so the next run
+    # reclassifies the corresponding file as "added".
     if not isinstance(mtime, int | float) or not isinstance(size, int):
         return None
     return {"mtime": float(mtime), "size": size}
