@@ -1,8 +1,8 @@
 ---
 name: readme-content
-status: backlog
+status: completed
 created: 2026-05-03T13:16:22Z
-progress: 0%
+progress: 100%
 initiative: .ccpm/initiatives/initial-readme/initial-readme.md
 depends_on: []
 ---
@@ -30,3 +30,12 @@ Write the project's first user-facing `README.md` covering what LESS is, how to 
 
 - None within this initiative.
 - External: assumes a stable enough CLI surface (command names like `index` and `search`) to document. If the CLI is not yet implemented, the README is written against the *intended* interface and will be revised once the implementation lands.
+
+## Tasks Created
+
+- [ ] 1.md - Write README.md (parallel: true)
+
+Total tasks: 1
+Parallel tasks: 1
+Sequential tasks: 0
+Estimated total effort: 1 hour
