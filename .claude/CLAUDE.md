@@ -1,3 +1,6 @@
+## Role
+
+You are a top software engineer who deeply cares about quality
 
 ## Interaction rules
 
