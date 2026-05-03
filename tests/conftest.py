@@ -17,3 +17,11 @@ def _reset_ebless_logger():
         logger.addHandler(handler)
     logger.setLevel(original_level)
     logger.propagate = original_propagate
+
+
+@pytest.fixture(autouse=True)
+def _redirect_inventory_path(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        "ebless.inventory.INVENTORY_PATH",
+        tmp_path / "inventory.json",
+    )

@@ -1,12 +1,13 @@
 from click.testing import CliRunner
 
 from ebless.cli import cli
+from ebless.indexer import index_books
 
 
 def test_index_happy_path_empty(tmp_path):
     result = CliRunner().invoke(cli, ["index", str(tmp_path)])
     assert result.exit_code == 0
-    assert result.output == ""
+    assert result.stdout == ""
 
 
 def test_index_prints_resolved_pdf_path(tmp_path):
@@ -15,7 +16,7 @@ def test_index_prints_resolved_pdf_path(tmp_path):
     result = CliRunner().invoke(cli, ["index", str(tmp_path)])
     assert result.exit_code == 0
     expected = tmp_path.resolve() / "fixture.pdf"
-    assert result.output == f"{expected}\n"
+    assert result.stdout == f"{expected}\n"
 
 
 def test_index_lists_all_pdfs_sorted(tmp_path):
@@ -42,7 +43,7 @@ def test_index_lists_all_pdfs_sorted(tmp_path):
         ]
     )
     expected_output = "".join(f"{p}\n" for p in expected)
-    assert result.output == expected_output
+    assert result.stdout == expected_output
 
 
 def test_index_missing_path(tmp_path):
@@ -55,3 +56,15 @@ def test_help_lists_index():
     result = CliRunner().invoke(cli, ["--help"])
     assert result.exit_code == 0
     assert "index" in result.output
+
+
+def test_index_books_orchestrates_discovery_and_inventory(tmp_path, capsys):
+    library = tmp_path / "library"
+    library.mkdir()
+    pdf = library / "fresh.pdf"
+    pdf.write_bytes(b"data")
+
+    index_books(library)
+
+    out = capsys.readouterr().out
+    assert out == f"{(library.resolve() / 'fresh.pdf')}\n"
