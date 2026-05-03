@@ -39,7 +39,7 @@ You are a top software engineer who deeply cares about quality
 ## Workflow
 
 - Write and pass tests with `just test` before finalizing
-- Ensure quality with `just lint` and `just typecheck`
+- Ensure quality with `just lint`, `just format`, and `just typecheck`
 - When refactoring: never modify test assertions, only the implementation
 - Keep a `README.md` with setup/run info
 - Store documents in Markdown

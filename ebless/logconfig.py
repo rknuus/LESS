@@ -40,9 +40,7 @@ def configure(level: str, log_file: Path | None) -> None:
         _attach(logger, logging.FileHandler(log_file, mode="a", encoding="utf-8"), formatter)
 
 
-def _attach(
-    logger: logging.Logger, handler: logging.Handler, formatter: logging.Formatter
-) -> None:
+def _attach(logger: logging.Logger, handler: logging.Handler, formatter: logging.Formatter) -> None:
     handler.setFormatter(formatter)
     setattr(handler, _MANAGED, True)
     logger.addHandler(handler)

@@ -7,17 +7,13 @@ from ebless.cli import cli
 
 
 def test_log_level_debug_accepted(tmp_path):
-    result = CliRunner().invoke(
-        cli, ["--log-level", "DEBUG", "index", str(tmp_path)]
-    )
+    result = CliRunner().invoke(cli, ["--log-level", "DEBUG", "index", str(tmp_path)])
     assert result.exit_code == 0
     assert logging.getLogger("ebless").level == logging.DEBUG
 
 
 def test_log_level_invalid_rejected(tmp_path):
-    result = CliRunner().invoke(
-        cli, ["--log-level", "INVALID", "index", str(tmp_path)]
-    )
+    result = CliRunner().invoke(cli, ["--log-level", "INVALID", "index", str(tmp_path)])
     assert result.exit_code != 0
     assert "Invalid value" in result.stderr
     assert "INVALID" in result.stderr
@@ -49,9 +45,7 @@ def test_default_invocation_configures_structured_stderr_handler(tmp_path):
     logger = logging.getLogger("ebless")
     assert logger.level == logging.INFO
 
-    stream_handlers = [
-        h for h in logger.handlers if type(h) is logging.StreamHandler
-    ]
+    stream_handlers = [h for h in logger.handlers if type(h) is logging.StreamHandler]
     assert len(stream_handlers) == 1
     handler = stream_handlers[0]
 
