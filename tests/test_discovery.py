@@ -1,3 +1,4 @@
+import logging
 import sys
 
 import pytest
@@ -94,7 +95,10 @@ def test_broken_symlink_does_not_break_walk(tmp_path):
     sys.platform == "win32",
     reason="chmod 0o000 doesn't strip read perms on Windows",
 )
-def test_unreadable_subdir_warns_and_continues(tmp_path, capsys):
+def test_unreadable_subdir_warns_and_continues(tmp_path, caplog):
+    discovery_logger = logging.getLogger("ebless.discovery")
+    caplog.set_level(logging.WARNING, logger="ebless.discovery")
+    discovery_logger.addHandler(caplog.handler)
     readable = tmp_path / "open"
     closed = tmp_path / "closed"
     readable.mkdir()
@@ -106,18 +110,27 @@ def test_unreadable_subdir_warns_and_continues(tmp_path, capsys):
         results = find_indexable_files(tmp_path)
         assert (readable / "ok.pdf") in results
         assert all("closed" not in str(p) for p in results)
-        captured = capsys.readouterr()
-        assert "cannot read" in captured.err
-        assert "closed" in captured.err
+        matching = [
+            r
+            for r in caplog.records
+            if r.levelname == "WARNING"
+            and r.msg == "cannot read directory"
+            and getattr(r, "path", None) == str(closed)
+        ]
+        assert matching
     finally:
         closed.chmod(0o700)
+        discovery_logger.removeHandler(caplog.handler)
 
 
 @pytest.mark.skipif(
     sys.platform == "win32",
     reason="chmod 0o000 doesn't strip read perms on Windows",
 )
-def test_unreadable_root_returns_empty(tmp_path, capsys):
+def test_unreadable_root_returns_empty(tmp_path, caplog):
+    discovery_logger = logging.getLogger("ebless.discovery")
+    caplog.set_level(logging.WARNING, logger="ebless.discovery")
+    discovery_logger.addHandler(caplog.handler)
     closed = tmp_path / "closed_root"
     closed.mkdir()
     (closed / "x.pdf").touch()
@@ -125,10 +138,17 @@ def test_unreadable_root_returns_empty(tmp_path, capsys):
     try:
         results = find_indexable_files(closed)
         assert results == []
-        captured = capsys.readouterr()
-        assert "cannot read" in captured.err
+        matching = [
+            r
+            for r in caplog.records
+            if r.levelname == "WARNING"
+            and r.msg == "cannot read directory"
+            and getattr(r, "path", None) == str(closed)
+        ]
+        assert matching
     finally:
         closed.chmod(0o700)
+        discovery_logger.removeHandler(caplog.handler)
 
 
 def test_returns_sorted_list(tmp_path):

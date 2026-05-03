@@ -1,7 +1,9 @@
+import logging
 import os
-import sys
 from collections.abc import Iterator
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 _INDEXABLE_EXTENSIONS = frozenset({".pdf"})
 
@@ -14,7 +16,10 @@ def _walk(directory: Path) -> Iterator[Path]:
     try:
         scanner = os.scandir(directory)
     except (PermissionError, OSError) as exc:
-        print(f"discovery: cannot read {directory}: {exc}", file=sys.stderr)
+        logger.warning(
+            "cannot read directory",
+            extra={"path": str(directory), "error": str(exc)},
+        )
         return
 
     with scanner:
@@ -28,4 +33,7 @@ def _walk(directory: Path) -> Iterator[Path]:
                     if Path(entry.name).suffix.lower() in _INDEXABLE_EXTENSIONS:
                         yield Path(entry.path)
             except OSError as exc:
-                print(f"discovery: cannot read {entry.path}: {exc}", file=sys.stderr)
+                logger.warning(
+                    "cannot read directory entry",
+                    extra={"path": entry.path, "error": str(exc)},
+                )
