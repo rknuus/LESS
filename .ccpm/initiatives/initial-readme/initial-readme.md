@@ -1,9 +1,11 @@
 ---
 name: initial-readme
 description: Initial README explaining what LESS is and how to set up and use the CLI
-status: backlog
+status: complete
 worktree: false
 created: 2026-05-03T13:08:41Z
+updated: 2026-05-03T13:51:10Z
+completed: 2026-05-03T13:51:10Z
 ---
 
 # Initiative: initial-readme
