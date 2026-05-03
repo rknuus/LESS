@@ -74,3 +74,11 @@ A single task — `Bootstrap ebless package with index CLI and tests` — owns t
 ## Estimated Effort
 
 XS — a few hours of focused work. The pieces are small and well-understood; the interesting decisions (language, framework, tool, stub shape) are already settled by the initiative.
+
+## Tasks Created
+- [ ] 2.md - Bootstrap ebless package with index CLI and tests (parallel: false)
+
+Total tasks: 1
+Parallel tasks: 0
+Sequential tasks: 1
+Estimated total effort: 2 hours
