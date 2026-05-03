@@ -6,22 +6,6 @@ import pytest
 from ebless.logconfig import configure
 
 
-@pytest.fixture(autouse=True)
-def _reset_ebless_logger():
-    logger = logging.getLogger("ebless")
-    original_handlers = list(logger.handlers)
-    original_level = logger.level
-    original_propagate = logger.propagate
-    yield
-    for handler in list(logger.handlers):
-        logger.removeHandler(handler)
-        handler.close()
-    for handler in original_handlers:
-        logger.addHandler(handler)
-    logger.setLevel(original_level)
-    logger.propagate = original_propagate
-
-
 def test_configure_is_idempotent():
     configure("info", None)
     first = list(logging.getLogger("ebless").handlers)
