@@ -47,13 +47,13 @@ As a developer, I can run the project's tests with a single command and see them
 
 - **Python 3.11+** as the minimum runtime — the project targets a recent runtime, and locking to a current minor avoids legacy-compatibility branches in subsequent initiatives.
 - **No runtime dependencies beyond Click** in this initiative. Embedding/PDF/EPUB/vector-store libraries are explicitly deferred.
-- **Editable install must work** from a clean clone: `pip install -e .` (or equivalent with `uv`) produces a working `ebless` on PATH.
+- **Editable install must work** from a clean clone via `uv` (e.g. `uv sync` / `uv pip install -e .`), producing a working `ebless` on PATH.
 - **README is updated** with the actual install and run commands once the skeleton is real, replacing the current "Follow the installation instructions for your platform." placeholder.
 - **Tests are deterministic** — no network calls, no filesystem state outside `tmp_path` fixtures.
 
 ## Success Criteria
 
-- Running `pip install -e .` (or `uv pip install -e .`) in a fresh clone succeeds and puts `ebless` on PATH.
+- Running `uv sync` (or `uv pip install -e .`) in a fresh clone succeeds and puts `ebless` on PATH (via `uv run ebless` or after activating the uv-managed venv).
 - `ebless --help` lists the `index` subcommand.
 - `ebless index <existing-dir>` prints `would index <existing-dir>` and exits 0.
 - `ebless index <nonexistent-path>` exits non-zero with a clear error (Click's default error message is acceptable).
@@ -65,7 +65,7 @@ As a developer, I can run the project's tests with a single command and see them
 - **Language**: Python 3 (Python 3.11+).
 - **CLI framework**: Click.
 - **Test framework**: pytest (idiomatic for Python; aligns with project CLAUDE.md's "Write and pass tests before finalizing").
-- **Packaging**: PEP 621 `pyproject.toml`. Build backend choice (setuptools, hatchling, etc.) is left to the implementer; pick the simplest option that works.
+- **Packaging & dependency management**: `uv` is the required tool for dependency management and virtual environments. Project metadata lives in PEP 621 `pyproject.toml`; lockfile is `uv.lock` (committed). Build backend choice (setuptools, hatchling, etc.) is left to the implementer; pick the simplest option `uv` works with cleanly.
 - **No real indexing logic**: The stub is the deliverable for the indexing path in this initiative. The interface between CLI and indexer is what matters — it must be replaceable without CLI changes.
 - **Single-platform development**: macOS/Linux target; Windows is not in scope for this initiative.
 - **No CI configuration**: Pipelines are out of scope here; running `pytest` locally is the verification path.
@@ -86,6 +86,6 @@ As a developer, I can run the project's tests with a single command and see them
 ## Dependencies
 
 - Python 3.11+ available on the developer's machine.
-- `pip` (or `uv`) for the editable install.
+- `uv` installed for dependency management and editable install.
 - Click (added as the only runtime dependency).
 - pytest (added as a dev/test dependency).
